@@ -1,0 +1,20 @@
+[
+{
+    "model": "fixapi.customer",
+    "pk": 1,
+    "fields": {
+      "user": 1,
+      "phone_number": 1233214567,
+      "address": "1213 Left St, Nashville TN 37217"
+    }
+},
+{
+    "model": "fixapi.customer",
+    "pk": 2,
+    "fields": {
+      "user": 2,
+      "phone_number": 1234567890,
+      "address": "123 Main St, Nashville TN 37217"
+    }
+}
+]

@@ -10,6 +10,6 @@ python3 manage.py loaddata tokens
 python3 manage.py loaddata customers
 python3 manage.py loaddata categories
 python3 manage.py loaddata contractors
-python3 manage.py loaddata service_requests
-python3 manage.py loaddata servicerequest_categories
+python3 manage.py loaddata servicerequests
+python3 manage.py loaddata servicerequestcategories
 

@@ -1,5 +1,5 @@
 from django.db import models
-from .service_request import ServiceRequest
+from .servicerequest import ServiceRequest
 from .category import Category
 
 class ServiceRequestCategory(models.Model):
