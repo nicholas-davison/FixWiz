@@ -31,7 +31,22 @@ def login_user(request):
         # If authentication was successful, respond with their token
         if authenticated_user is not None:
             token = Token.objects.get(user=authenticated_user)
-            data = json.dumps({"valid": True, "token": token.key, "id": authenticated_user.id})
+            try:
+                customer = Customer.objects.get(user=authenticated_user)
+                user_type = 'customer'
+            except Customer.DoesNotExist:
+                try:
+                    contractor = Contractor.objects.get(user=authenticated_user)
+                    user_type = 'contractor'
+                except Contractor.DoesNotExist:
+                    user_type = 'unknown'
+
+            data = json.dumps({
+                "valid": True, 
+                "token": token.key, 
+                "id": authenticated_user.id,
+                "user_type": user_type
+                })
             return HttpResponse(data, content_type='application/json')
 
         else:
@@ -60,21 +75,34 @@ def register_user(request):
         email=req_body['email'],
         password=req_body['password'],
         first_name=req_body['first_name'],
-        last_name=req_body['last_name']
+        last_name=req_body['last_name'],
     )
+    user_type = 'contractor'
+    if req_body['is_contractor'] == False:
+        customer = Customer.objects.create(
+            phone_number=req_body['phone_number'],
+            address=req_body['address'],
+            user=new_user
+        )
+        customer.save()
+        user_type = 'customer'
+        # Use the REST Framework's token generator on the new user account
+        token = Token.objects.create(user=new_user)
 
-    customer = Customer.objects.create(
-        phone_number=req_body['phone_number'],
-        address=req_body['address'],
-        user=new_user
-    )
+        # Return the token to the client
+        data = json.dumps({"token": token.key, "id": new_user.id, "user_type": user_type})
+        return HttpResponse(data, content_type='application/json', status=status.HTTP_201_CREATED)
 
-    # Commit the user to the database by saving it
-    customer.save()
+    contractor = Contractor.objects.create(
+            phone_number=req_body['phone_number'],
+            address=req_body['address'],
+            user=new_user
+            )
+    contractor.save()
 
     # Use the REST Framework's token generator on the new user account
     token = Token.objects.create(user=new_user)
 
     # Return the token to the client
-    data = json.dumps({"token": token.key, "id": new_user.id})
+    data = json.dumps({"token": token.key, "id": new_user.id, "user_type": user_type})
     return HttpResponse(data, content_type='application/json', status=status.HTTP_201_CREATED)
