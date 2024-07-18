@@ -1,0 +1,28 @@
+[
+{
+    "model": "fixapi.servicerequest",
+    "pk": 1,
+    "fields": {
+      "date_created": "2024-07-18",
+      "urgency_level": "high",
+      "customer": 1,
+      "description": "Fix the leaking pipe in the kitchen.",
+      "contractor": 1,
+      "date_claimed": "2024-07-19",
+      "date_completed": null
+    }
+},
+{
+    "model": "fixapi.servicerequest",
+    "pk": 2,
+    "fields": {
+      "date_created": "2024-07-18",
+      "urgency_level": "medium",
+      "customer": 2,
+      "description": "Repair the broken window in the living room.",
+      "contractor": null,
+      "date_claimed": null,
+      "date_completed": null
+    }
+}
+]

@@ -1,0 +1,22 @@
+[
+{
+    "model": "fixapi.contractor",
+    "pk": 1,
+    "fields": {
+      "user": 3,
+      "phone_number": 1239871234,
+      "address": "456 Pine St",
+      "is_approved": true
+    }
+},
+{
+    "model": "fixapi.contractor",
+    "pk": 2,
+    "fields": {
+      "user": 4,
+      "phone_number": 8762349876,
+      "address": "456 Elm St",
+      "is_approved": true
+    }
+}
+]
