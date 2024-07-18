@@ -2,11 +2,12 @@ from django.http import HttpResponseServerError
 from rest_framework import serializers, status
 from rest_framework.response import Response
 from rest_framework.viewsets import ViewSet
-from fixapi.models import Contractor, Customer, ServiceRequest, ServiceRequestCategory
-from .category import CategorySerializer
+from fixapi.models import Category
 
 
-class ServiceRequestView(ViewSet):
+class CategoryView(ViewSet):
+    """Void view set"""
+
 
     def create(self, request):
         """Handle POST operations
@@ -75,36 +76,22 @@ class ServiceRequestView(ViewSet):
             return Response({'message': ex.args[0]}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     def list(self, request):
-        """Handle GET requests for all service requests
+        """Handle GET requests for all items
 
         Returns:
             Response -- JSON serialized array
-            ** try getting a customer, and filter the service requests based on the customer. except it that customer does not exists, then return them all.
         """
         try:
-            current_user = Customer.objects.get(user=request.auth.user)
-            service_requests = ServiceRequest.objects.filter(customer=current_user)
-        except Customer.DoesNotExist:
-            current_user = Contractor.objects.get(user=request.auth.user)
-            service_requests = ServiceRequest.objects.all()
-
-        serializer = ServiceRequestSerializer(service_requests, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+            voids = Void.objects.all()
+            serializer = VoidSerializer(voids, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except Exception as ex:
+            return HttpResponseServerError(ex)
 
 
-class ServiceRequestCategorySerializer(serializers.ModelSerializer):
+class CategorySerializer(serializers.ModelSerializer):
     """JSON serializer"""
 
-    category = CategorySerializer(many=False)
     class Meta:
-        model = ServiceRequestCategory
-        fields = ( 'category', )
-
-class ServiceRequestSerializer(serializers.ModelSerializer):
-    """JSON serializer"""
-
-    categories = ServiceRequestCategorySerializer(many=True)
-    class Meta:
-        model = ServiceRequest
-        fields = ( 'id', 'date_created', 'urgency_level', 'customer', 'categories' )
-
+        model = Category
+        fields = ( 'id', 'name' )
