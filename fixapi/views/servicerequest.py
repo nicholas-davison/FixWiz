@@ -32,8 +32,8 @@ class ServiceRequestView(ViewSet):
             Response -- JSON serialized instance
         """
         try:
-            void = Void.objects.get(pk=pk)
-            serializer = VoidSerializer(void)
+            service_request = ServiceRequest.objects.get(pk=pk)
+            serializer = ServiceRequestSerializer(service_request)
             return Response(serializer.data)
         except Exception as ex:
             return Response({"reason": ex.args[0]}, status=status.HTTP_400_BAD_REQUEST)
@@ -75,21 +75,13 @@ class ServiceRequestView(ViewSet):
             return Response({'message': ex.args[0]}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     def list(self, request):
-        """Handle GET requests for all service requests
-
-        Returns:
-            Response -- JSON serialized array
-            ** try getting a customer, and filter the service requests based on the customer. except it that customer does not exists, then return them all.
-        """
+        """Handle GET requests for all service requests"""
         try:
-            current_user = Customer.objects.get(user=request.auth.user)
-            service_requests = ServiceRequest.objects.filter(customer=current_user)
-        except Customer.DoesNotExist:
-            current_user = Contractor.objects.get(user=request.auth.user)
-            service_requests = ServiceRequest.objects.all()
-
-        serializer = ServiceRequestSerializer(service_requests, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+            service_requests = ServiceRequest.objects.filter(contractor=None)
+            serializer = ServiceRequestSerializer(service_requests, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 class ServiceRequestCategorySerializer(serializers.ModelSerializer):
@@ -106,5 +98,5 @@ class ServiceRequestSerializer(serializers.ModelSerializer):
     categories = ServiceRequestCategorySerializer(many=True)
     class Meta:
         model = ServiceRequest
-        fields = ( 'id', 'date_created', 'urgency_level', 'customer', 'categories' )
+        fields = ( 'id', 'date_created', 'urgency_level', 'customer', 'categories', 'contractor' )
 

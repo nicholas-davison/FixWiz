@@ -84,7 +84,7 @@ class ProfileView(ViewSet):
     '''
 
     @action(methods=['get'], detail=False)
-    def servicerequests(self, request):
+    def service_requests(self, request):
 
         user = request.auth.user
         
