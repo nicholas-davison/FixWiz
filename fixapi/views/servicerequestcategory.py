@@ -2,10 +2,10 @@ from django.http import HttpResponseServerError
 from rest_framework import serializers, status
 from rest_framework.response import Response
 from rest_framework.viewsets import ViewSet
-from fixapi.models import Category
+from fixapi.models import ServiceRequestCategory
 
 
-class CategoryView(ViewSet):
+class ServiceRequestCategoryView(ViewSet):
     """Void view set"""
 
 
@@ -15,12 +15,12 @@ class CategoryView(ViewSet):
         Returns:
             Response -- JSON serialized instance
         """
-        void = Void()
-        void.sample_name = request.data["name"]
-        void.sample_description = request.data["description"]
+        service_request_category = ServiceRequestCategory()
+        service_request_category.service_request = request.data["service_request"]
+        service_request_category = request.data["category"]
 
         try:
-            void.save()
+            service_request_category.save()
             serializer = VoidSerializer(void)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         except Exception as ex:
@@ -89,9 +89,9 @@ class CategoryView(ViewSet):
             return HttpResponseServerError(ex)
 
 
-class CategorySerializer(serializers.ModelSerializer):
+class ServiceRequestCategorySerializer(serializers.ModelSerializer):
     """JSON serializer"""
 
     class Meta:
-        model = Category
-        fields = ( 'id', 'name' )
+        model = ServiceRequestCategory
+        fields = ( 'id', 'service_request', 'category' )
