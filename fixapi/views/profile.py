@@ -1,13 +1,16 @@
 from django.http import HttpResponseServerError
 from rest_framework import serializers, status
 from rest_framework.response import Response
+from rest_framework.decorators import action
 from rest_framework.viewsets import ViewSet
-from fixapi.models import Contractor, Customer, ServiceRequest, ServiceRequestCategory
-from .category import CategorySerializer
+from fixapi.models import Customer, Contractor, ServiceRequest
+from .servicerequest import ServiceRequestSerializer
 
 
-class ServiceRequestView(ViewSet):
+class ProfileView(ViewSet):
+    """Void view set"""
 
+    '''
     def create(self, request):
         """Handle POST operations
 
@@ -24,7 +27,9 @@ class ServiceRequestView(ViewSet):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         except Exception as ex:
             return Response({"reason": ex.args[0]}, status=status.HTTP_400_BAD_REQUEST)
+    '''
 
+    '''
     def retrieve(self, request, pk=None):
         """Handle GET requests for single item
 
@@ -32,12 +37,14 @@ class ServiceRequestView(ViewSet):
             Response -- JSON serialized instance
         """
         try:
-            service_request = ServiceRequest.objects.get(pk=pk)
-            serializer = ServiceRequestSerializer(service_request)
+            void = Void.objects.get(pk=pk)
+            serializer = VoidSerializer(void)
             return Response(serializer.data)
         except Exception as ex:
             return Response({"reason": ex.args[0]}, status=status.HTTP_400_BAD_REQUEST)
+    '''
 
+    '''
     def update(self, request, pk=None):
         """Handle PUT requests
 
@@ -56,7 +63,8 @@ class ServiceRequestView(ViewSet):
             return HttpResponseServerError(ex)
 
         return Response(None, status=status.HTTP_204_NO_CONTENT)
-
+    '''
+    '''
     def destroy(self, request, pk=None):
         """Handle DELETE requests for a single item
 
@@ -73,30 +81,31 @@ class ServiceRequestView(ViewSet):
 
         except Exception as ex:
             return Response({'message': ex.args[0]}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    '''
 
-    def list(self, request):
-        """Handle GET requests for all service requests"""
+    @action(methods=['get'], detail=False)
+    def service_requests(self, request):
+
+        user = request.auth.user
+        
         try:
-            service_requests = ServiceRequest.objects.filter(contractor=None)
-            serializer = ServiceRequestSerializer(service_requests, many=True)
-            return Response(serializer.data, status=status.HTTP_200_OK)
-        except Exception as e:
-            return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
-
-class ServiceRequestCategorySerializer(serializers.ModelSerializer):
+            current_user = Customer.objects.get(user=user)
+            service_requests = ServiceRequest.objects.filter(customer=current_user)
+        except Customer.DoesNotExist:
+            try:
+                current_user = Contractor.objects.get(user=user)
+                service_requests = ServiceRequest.objects.filter(contractor=current_user)
+            except Contractor.DoesNotExist:
+                return Response({'message': 'User not found as Customer or Contractor'}, status=status.HTTP_404_NOT_FOUND)
+        
+        serialized = ServiceRequestSerializer(service_requests, many=True)
+        return Response(serialized.data, status=status.HTTP_200_OK)
+                 
+'''
+class ProfileSerializer(serializers.ModelSerializer):
     """JSON serializer"""
 
-    category = CategorySerializer(many=False)
     class Meta:
-        model = ServiceRequestCategory
-        fields = ( 'category', )
-
-class ServiceRequestSerializer(serializers.ModelSerializer):
-    """JSON serializer"""
-
-    categories = ServiceRequestCategorySerializer(many=True)
-    class Meta:
-        model = ServiceRequest
-        fields = ( 'id', 'date_created', 'urgency_level', 'customer', 'categories', 'contractor' )
-
+        model = Void
+        fields = ( 'id', 'sample_name', 'sample_description', )
+'''

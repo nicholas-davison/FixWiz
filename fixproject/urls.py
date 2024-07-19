@@ -8,7 +8,9 @@ from fixapi.views import *
 router = routers.DefaultRouter(trailing_slash=False)
 router.register(r'customers', Customers, 'customer')
 router.register(r'users', Users, 'user')
-router.register(r'service-requests', ServiceRequestView, 'servicerequest')
+router.register(r'service_requests', ServiceRequestView, 'service_request')
+router.register(r'profile', ProfileView, 'profile')
+
 
 urlpatterns = [
     path('', include(router.urls)),
