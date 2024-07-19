@@ -98,5 +98,5 @@ class ServiceRequestSerializer(serializers.ModelSerializer):
     categories = ServiceRequestCategorySerializer(many=True)
     class Meta:
         model = ServiceRequest
-        fields = ( 'id', 'date_created', 'urgency_level', 'customer', 'categories', 'contractor' )
+        fields = ( 'id', 'date_created', 'urgency_level', 'customer', 'description' 'categories', 'contractor', 'date_claimed', 'date_completed' )
 
