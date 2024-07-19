@@ -82,8 +82,8 @@ class CategoryView(ViewSet):
             Response -- JSON serialized array
         """
         try:
-            voids = Void.objects.all()
-            serializer = VoidSerializer(voids, many=True)
+            categories = Category.objects.all()
+            serializer = CategorySerializer(categories, many=True)
             return Response(serializer.data, status=status.HTTP_200_OK)
         except Exception as ex:
             return HttpResponseServerError(ex)

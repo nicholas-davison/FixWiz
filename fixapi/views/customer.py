@@ -4,17 +4,15 @@ from rest_framework.response import Response
 from rest_framework import serializers
 from rest_framework import status
 from fixapi.models import Customer
+from .user import UserSerializer
 
 
-class CustomerSerializer(serializers.HyperlinkedModelSerializer):
+class CustomerSerializer(serializers.ModelSerializer):
     """JSON serializer for customers"""
+    user = UserSerializer()
     class Meta:
         model = Customer
-        url = serializers.HyperlinkedIdentityField(
-            view_name='customer', lookup_field='id'
-        )
-        fields = ('id', 'url', 'user', 'phone_number', 'address')
-        depth = 1
+        fields = ('id', 'user', 'phone_number', 'address')
 
 
 class Customers(ViewSet):
