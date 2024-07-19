@@ -5,44 +5,29 @@ from rest_framework.decorators import action
 from rest_framework.viewsets import ViewSet
 from fixapi.models import Customer, Contractor, ServiceRequest
 from .servicerequest import ServiceRequestSerializer
+from .customer import CustomerSerializer
+from .user import UserSerializer
 
 
 class ProfileView(ViewSet):
-    """Void view set"""
 
-    '''
-    def create(self, request):
-        """Handle POST operations
 
-        Returns:
-            Response -- JSON serialized instance
-        """
-        void = Void()
-        void.sample_name = request.data["name"]
-        void.sample_description = request.data["description"]
-
-        try:
-            void.save()
-            serializer = VoidSerializer(void)
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        except Exception as ex:
-            return Response({"reason": ex.args[0]}, status=status.HTTP_400_BAD_REQUEST)
-    '''
-
-    '''
-    def retrieve(self, request, pk=None):
+    def list(self, request, pk=None):
         """Handle GET requests for single item
 
         Returns:
             Response -- JSON serialized instance
         """
+        user = request.auth.user
         try:
-            void = Void.objects.get(pk=pk)
-            serializer = VoidSerializer(void)
-            return Response(serializer.data)
-        except Exception as ex:
-            return Response({"reason": ex.args[0]}, status=status.HTTP_400_BAD_REQUEST)
-    '''
+            user_profile = Customer.objects.get(user=user)
+            serializer = CustomerSerializer(user_profile)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except Customer.DoesNotExist:
+            user_profile = Contractor.objects.get(user=user)
+            serializer = ContractorSerializer(user_profile)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+    
 
     '''
     def update(self, request, pk=None):
@@ -109,3 +94,8 @@ class ProfileSerializer(serializers.ModelSerializer):
         model = Void
         fields = ( 'id', 'sample_name', 'sample_description', )
 '''
+class ContractorSerializer(serializers.ModelSerializer):
+    user = UserSerializer()
+    class Meta:
+        model = Contractor
+        fields = ('id','user', 'phone_number', 'address')

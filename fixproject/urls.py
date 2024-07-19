@@ -10,6 +10,8 @@ router.register(r'customers', Customers, 'customer')
 router.register(r'users', Users, 'user')
 router.register(r'service_requests', ServiceRequestView, 'service_request')
 router.register(r'profile', ProfileView, 'profile')
+router.register(r'categories', CategoryView, 'category')
+router.register(r'service_request_categories', ServiceRequestCategoryView, 'service_request_category')
 
 
 urlpatterns = [

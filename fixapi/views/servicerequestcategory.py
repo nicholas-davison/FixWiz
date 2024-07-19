@@ -2,7 +2,8 @@ from django.http import HttpResponseServerError
 from rest_framework import serializers, status
 from rest_framework.response import Response
 from rest_framework.viewsets import ViewSet
-from fixapi.models import ServiceRequestCategory
+from fixapi.models import ServiceRequestCategory, ServiceRequest
+from .category import CategorySerializer
 
 
 class ServiceRequestCategoryView(ViewSet):
@@ -49,7 +50,8 @@ class ServiceRequestCategoryView(ViewSet):
             Response -- JSON serialized array
         """
         try:
-            service_request_category = ServiceRequestCategory.objects.filter(service_request=request.data['service_request'])
+            service_request = ServiceRequest.objects.get(pk=request.data['service_request'])
+            service_request_category = ServiceRequestCategory.objects.filter(service_request=service_request)
             serializer = ServiceRequestCategorySerializer(service_request_category, many=True)
             return Response(serializer.data, status=status.HTTP_200_OK)
         except Exception as ex:
@@ -58,7 +60,7 @@ class ServiceRequestCategoryView(ViewSet):
 
 class ServiceRequestCategorySerializer(serializers.ModelSerializer):
     """JSON serializer"""
-
+    category = CategorySerializer()
     class Meta:
         model = ServiceRequestCategory
         fields = ( 'id', 'service_request', 'category' )
