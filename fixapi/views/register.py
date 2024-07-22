@@ -24,9 +24,9 @@ def login_user(request):
     if request.method == 'POST':
 
         # Use the built-in authenticate method to verify
-        email = req_body['email']
+        name = req_body['username']
         pass_word = req_body['password']
-        authenticated_user = authenticate(email=email, password=pass_word)
+        authenticated_user = authenticate(username=name, password=pass_word)
 
         # If authentication was successful, respond with their token
         if authenticated_user is not None:
