@@ -28,27 +28,30 @@ class ProfileView(ViewSet):
             serializer = ContractorSerializer(user_profile)
             return Response(serializer.data, status=status.HTTP_200_OK)
     
-
-    '''
+    
     def update(self, request, pk=None):
         """Handle PUT requests
 
         Returns:
             Response -- Empty body with 204 status code
         """
+        user = request.auth.user
         try:
-            void = Void.objects.get(pk=pk)
-            void.sample_name = request.data["name"]
-            void.sample_description = request.data["description"]
-            void.save()
-        except Void.DoesNotExist:
+            user_profile = Customer.objects.get(user=user)
+        except Customer.DoesNotExist:
+            user_profile = Contractor.objects.get(user=user)
+        except Contractor.DoesNotExist:
             return Response(None, status=status.HTTP_404_NOT_FOUND)
-
         except Exception as ex:
             return HttpResponseServerError(ex)
+        
+        user_profile.phone_number = request.data["phone_number"]
+        user_profile.address = request.data["address"]
+        user_profile.save()
 
+        
         return Response(None, status=status.HTTP_204_NO_CONTENT)
-    '''
+
     '''
     def destroy(self, request, pk=None):
         """Handle DELETE requests for a single item
