@@ -1,6 +1,7 @@
 from django.db import models
 from .customer import Customer
 from .contractor import Contractor
+from .category import Category
 
 class ServiceRequest(models.Model):
     URGENCY_CHOICES = [
@@ -15,3 +16,5 @@ class ServiceRequest(models.Model):
     contractor = models.ForeignKey(Contractor, on_delete=models.SET_NULL, null=True, blank=True)
     date_claimed = models.DateField(null=True, blank=True)
     date_completed = models.DateField(null=True, blank=True)
+
+    request_categories = models.ManyToManyField(Category, through='ServiceRequestCategory')
