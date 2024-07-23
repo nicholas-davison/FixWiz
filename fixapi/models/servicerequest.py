@@ -18,3 +18,6 @@ class ServiceRequest(models.Model):
     date_completed = models.DateField(null=True, blank=True)
 
     request_categories = models.ManyToManyField(Category, through='ServiceRequestCategory')
+
+    def get_categories(self):
+        return self.request_categories.all()
