@@ -3,7 +3,7 @@ from datetime import date
 from rest_framework import serializers, status
 from rest_framework.response import Response
 from rest_framework.viewsets import ViewSet
-from fixapi.models import Contractor, Customer, ServiceRequest, ServiceRequestCategory
+from fixapi.models import Contractor, Customer, ServiceRequest, ServiceRequestCategory, Category
 from .category import CategorySerializer
 
 
@@ -23,8 +23,17 @@ class ServiceRequestView(ViewSet):
         service_request.urgency_level = request.data["urgency_level"]
         service_request.description = request.data["description"]
 
+        category_ids = request.data.get('category_ids', [])
+
         try:
             service_request.save()
+            for category_id in category_ids:
+                try:
+                    category = Category.objects.get(id=category_id)
+                    service_request_category = ServiceRequestCategory(service_request=service_request, category=category)
+                    service_request_category.save()
+                except Category.DoesNotExist:
+                    return Response({'error': f'Category with id {category_id} does not exist.'}, status=400)
             serializer = ServiceRequestSerializer(service_request)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         except Exception as ex:
