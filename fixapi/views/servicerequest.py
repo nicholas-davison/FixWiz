@@ -95,7 +95,7 @@ class ServiceRequestView(ViewSet):
 class ServiceRequestCategorySerializer(serializers.ModelSerializer):
     """JSON serializer"""
 
-    category = CategorySerializer(many=False)
+    #category = CategorySerializer(many=False)
     class Meta:
         model = ServiceRequestCategory
         fields = ( 'category', )
@@ -103,8 +103,10 @@ class ServiceRequestCategorySerializer(serializers.ModelSerializer):
 class ServiceRequestSerializer(serializers.ModelSerializer):
     """JSON serializer"""
 
-    categories = ServiceRequestCategorySerializer(many=True)
+    categories = CategorySerializer(many=True, source='get_categories')
     class Meta:
         model = ServiceRequest
         fields = ( 'id', 'date_created', 'urgency_level', 'customer', 'description', 'categories', 'contractor', 'date_claimed', 'date_completed', )
+
+
 
