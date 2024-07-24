@@ -45,6 +45,7 @@ class ServiceRequestView(ViewSet):
         Returns:
             Response -- JSON serialized instance
         """
+
         try:
             service_request = ServiceRequest.objects.get(pk=pk)
             serializer = ServiceRequestSerializer(service_request)
@@ -60,11 +61,23 @@ class ServiceRequestView(ViewSet):
         """
         try:
             service_request = ServiceRequest.objects.get(pk=pk)
-            service_request.urgency_level = request.data["urgency_level"]
-            service_request.description = request.data["description"]
-            service_request.contractor = request.data["contractor"]
-            service_request.date_claimed = request.data["date_claimed"]
-            service_request.date_completed = request.data["date_completed"]
+            if 'urgency_level' in request.data:
+                service_request.urgency_level = request.data['urgency_level']
+            if 'description' in request.data:
+                service_request.description = request.data['description']
+            if 'contractor' in request.data:
+                service_request.contractor = request.data['contractor']
+            if 'date_claimed' in request.data:
+                service_request.date_claimed = request.data['date_claimed']
+            if 'date_completed' in request.data:
+                service_request.date_completed = request.data['date_completed']
+
+            if 'category_ids' in request.data:
+                category_ids = request.data['category_ids']
+                categories = Category.objects.filter(id__in=category_ids)
+                service_request.request_categories.set(categories)
+
+            service_request.save()
 
         except service_request.DoesNotExist:
             return Response(None, status=status.HTTP_404_NOT_FOUND)
