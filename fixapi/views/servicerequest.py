@@ -45,11 +45,17 @@ class ServiceRequestView(ViewSet):
         Returns:
             Response -- JSON serialized instance
         """
-
         try:
-            service_request = ServiceRequest.objects.get(pk=pk)
-            serializer = ServiceRequestSerializer(service_request)
-            return Response(serializer.data)
+            current_user = Contractor.objects.get(user=request.auth.user)
+        except Contractor.DoesNotExist:
+            current_user = Customer.objects.get(user=request.auth.user)
+            try:
+                service_request = ServiceRequest.objects.get(pk=pk, customer=current_user)
+                serializer = ServiceRequestSerializer(service_request)
+                return Response(serializer.data)
+            except ServiceRequest.DoesNotExist:
+                return Response({"reason": "Nice try but thats not your ticket!"}, status=status.HTTP_401_UNAUTHORIZED)
+            
         except Exception as ex:
             return Response({"reason": ex.args[0]}, status=status.HTTP_400_BAD_REQUEST)
 
