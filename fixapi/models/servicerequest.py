@@ -9,6 +9,7 @@ class ServiceRequest(models.Model):
         ('medium', 'Medium'),
         ('low', 'Low'),
     ]
+    title = models.CharField(max_length=25)
     date_created = models.DateField(auto_now_add=True)
     urgency_level = models.CharField(max_length=10, choices=URGENCY_CHOICES, default='medium')
     customer = models.ForeignKey(Customer, on_delete=models.CASCADE)

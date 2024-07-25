@@ -22,6 +22,7 @@ class ServiceRequestView(ViewSet):
         service_request.customer = current_user
         service_request.urgency_level = request.data["urgency_level"]
         service_request.description = request.data["description"]
+        service_request.title = request.data["title"]
 
         category_ids = request.data.get('category_ids', [])
 
@@ -69,6 +70,8 @@ class ServiceRequestView(ViewSet):
             service_request = ServiceRequest.objects.get(pk=pk)
             if 'urgency_level' in request.data:
                 service_request.urgency_level = request.data['urgency_level']
+            if 'title' in request.data:
+                service_request.title = request.data['title']
             if 'description' in request.data:
                 service_request.description = request.data['description']
             if 'contractor' in request.data:
@@ -134,7 +137,7 @@ class ServiceRequestSerializer(serializers.ModelSerializer):
     categories = CategorySerializer(many=True, source='get_categories')
     class Meta:
         model = ServiceRequest
-        fields = ( 'id', 'date_created', 'urgency_level', 'customer', 'description', 'categories', 'contractor', 'date_claimed', 'date_completed', )
+        fields = ( 'id', 'title', 'date_created', 'urgency_level', 'customer', 'description', 'categories', 'contractor', 'date_claimed', 'date_completed', )
 
 
 
