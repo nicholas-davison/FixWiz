@@ -3,6 +3,7 @@
     "model": "fixapi.servicerequest",
     "pk": 1,
     "fields": {
+      "title": "Leaking Kitchen Pipe",
       "date_created": "2024-07-18",
       "urgency_level": "high",
       "customer": 1,
@@ -16,6 +17,7 @@
     "model": "fixapi.servicerequest",
     "pk": 2,
     "fields": {
+      "title": "Broken Window",
       "date_created": "2024-07-18",
       "urgency_level": "medium",
       "customer": 2,
