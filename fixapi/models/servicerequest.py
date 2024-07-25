@@ -22,3 +22,11 @@ class ServiceRequest(models.Model):
 
     def get_categories(self):
         return self.request_categories.all()
+    
+    def get_status(self):
+        if not self.contractor:
+            return 'open'
+        elif not self.date_completed:
+            return 'in progress'
+        else:
+            return 'closed'

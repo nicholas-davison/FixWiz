@@ -48,6 +48,10 @@ class ServiceRequestView(ViewSet):
         """
         try:
             current_user = Contractor.objects.get(user=request.auth.user)
+            service_request = ServiceRequest.objects.get(pk=pk)
+            serializer = ServiceRequestSerializer(service_request)
+            return Response(serializer.data)
+
         except Contractor.DoesNotExist:
             current_user = Customer.objects.get(user=request.auth.user)
             try:
@@ -135,9 +139,12 @@ class ServiceRequestSerializer(serializers.ModelSerializer):
     """JSON serializer"""
 
     categories = CategorySerializer(many=True, source='get_categories')
+    status = serializers.SerializerMethodField()
+
     class Meta:
         model = ServiceRequest
-        fields = ( 'id', 'title', 'date_created', 'urgency_level', 'customer', 'description', 'categories', 'contractor', 'date_claimed', 'date_completed', )
+        fields = ( 'id', 'title', 'date_created', 'urgency_level', 'customer', 'description', 'categories', 'contractor', 'date_claimed', 'date_completed', 'status' )
 
-
+    def get_status(self, obj):
+        return obj.get_status()
 
