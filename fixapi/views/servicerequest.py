@@ -48,6 +48,10 @@ class ServiceRequestView(ViewSet):
         """
         try:
             current_user = Contractor.objects.get(user=request.auth.user)
+            service_request = ServiceRequest.objects.get(pk=pk)
+            serializer = ServiceRequestSerializer(service_request)
+            return Response(serializer.data)
+
         except Contractor.DoesNotExist:
             current_user = Customer.objects.get(user=request.auth.user)
             try:
