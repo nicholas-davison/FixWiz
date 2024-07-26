@@ -79,9 +79,17 @@ class ServiceRequestView(ViewSet):
             if 'description' in request.data:
                 service_request.description = request.data['description']
             if 'contractor' in request.data:
-                service_request.contractor = request.data['contractor']
+                try:
+                    contractor = Contractor.objects.get(user=request.auth.user)
+                    service_request.contractor = contractor
+                except Contractor.DoesNotExist:
+                    return Response(None, status=status.HTTP_404_NOT_FOUND)
+            if 'remove_contractor' in request.data:
+                service_request.contractor = None
             if 'date_claimed' in request.data:
-                service_request.date_claimed = request.data['date_claimed']
+                service_request.date_claimed = date.today()
+            if 'date_unclaimed' in request.data:
+                service_request.date_claimed = None
             if 'date_completed' in request.data:
                 service_request.date_completed = request.data['date_completed']
 
