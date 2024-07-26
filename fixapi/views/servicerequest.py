@@ -91,7 +91,7 @@ class ServiceRequestView(ViewSet):
             if 'date_unclaimed' in request.data:
                 service_request.date_claimed = None
             if 'date_completed' in request.data:
-                service_request.date_completed = request.data['date_completed']
+                service_request.date_completed = date.today()
 
             if 'category_ids' in request.data:
                 category_ids = request.data['category_ids']
