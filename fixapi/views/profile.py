@@ -75,17 +75,24 @@ class ProfileView(ViewSet):
     def service_requests(self, request):
 
         user = request.auth.user
-        
+        ticket_status = self.request.query_params.get('status', None)
+
         try:
             current_user = Customer.objects.get(user=user)
-            service_requests = ServiceRequest.objects.filter(customer=current_user)
+            if ticket_status is None:
+                service_requests = ServiceRequest.objects.filter(customer=current_user, date_completed__isnull=True)
+            else:
+                service_requests = ServiceRequest.objects.filter(customer=current_user, date_completed__isnull=False)
         except Customer.DoesNotExist:
             try:
                 current_user = Contractor.objects.get(user=user)
-                service_requests = ServiceRequest.objects.filter(contractor=current_user)
+                if ticket_status is None:
+                    service_requests = ServiceRequest.objects.filter(contractor=current_user, date_completed__isnull=True)
+                else:
+                    service_requests = ServiceRequest.objects.filter(contractor=current_user, date_completed__isnull=False)
             except Contractor.DoesNotExist:
                 return Response({'message': 'User not found as Customer or Contractor'}, status=status.HTTP_404_NOT_FOUND)
-        
+
         serialized = ServiceRequestSerializer(service_requests, many=True)
         return Response(serialized.data, status=status.HTTP_200_OK)
                  
