@@ -36,6 +36,12 @@ class ProfileView(ViewSet):
             Response -- Empty body with 204 status code
         """
         user = request.auth.user
+        user.username = request.data.get("username", user.username)
+        user.email = request.data.get("email", user.email)
+        user.first_name = request.data.get("first_name", user.first_name)
+        user.last_name = request.data.get("last_name", user.last_name)
+        user.save()
+
         try:
             user_profile = Customer.objects.get(user=user)
         except Customer.DoesNotExist:
