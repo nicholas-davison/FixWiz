@@ -6,6 +6,8 @@ from rest_framework.viewsets import ViewSet
 from fixapi.models import Customer, Contractor, ServiceRequest
 from .servicerequest import ServiceRequestSerializer
 from .user import CustomerSerializer
+from .user import ContractorSerializer
+
 
 
 class ProfileView(ViewSet):
