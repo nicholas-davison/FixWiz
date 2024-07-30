@@ -5,8 +5,7 @@ from rest_framework.decorators import action
 from rest_framework.viewsets import ViewSet
 from fixapi.models import Customer, Contractor, ServiceRequest
 from .servicerequest import ServiceRequestSerializer
-from .customer import CustomerSerializer
-from .user import UserSerializer
+from .user import CustomerSerializer
 
 
 class ProfileView(ViewSet):
@@ -110,8 +109,3 @@ class ProfileSerializer(serializers.ModelSerializer):
         model = Void
         fields = ( 'id', 'sample_name', 'sample_description', )
 '''
-class ContractorSerializer(serializers.ModelSerializer):
-    user = UserSerializer()
-    class Meta:
-        model = Contractor
-        fields = ('id','user', 'phone_number', 'address')
