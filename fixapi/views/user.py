@@ -4,6 +4,8 @@ from rest_framework.response import Response
 from rest_framework import serializers
 from rest_framework import status
 from django.contrib.auth.models import User
+from fixapi.models import Customer
+from fixapi.models import Contractor
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -15,6 +17,20 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ('id', 'username', 'password', 'first_name', 'last_name', 'email', 'is_active', 'date_joined')
+
+class CustomerSerializer(serializers.ModelSerializer):
+
+    user = UserSerializer()
+    class Meta:
+        model = Customer
+        fields = ('id', 'user', 'phone_number', 'address')
+
+
+class ContractorSerializer(serializers.ModelSerializer):
+    user = UserSerializer()
+    class Meta:
+        model = Contractor
+        fields = ('id','user', 'phone_number', 'address')
 
 
 class Users(ViewSet):
@@ -32,13 +48,11 @@ class Users(ViewSet):
             Response -- JSON serialized customer instance
         """
         try:
-            user = User.objects.get(pk=pk)
-            serializer = UserSerializer(user, context={'request': request})
+            contractor = Contractor.objects.get(pk=pk)
+            serializer = ContractorSerializer(contractor, context={'request': request})
             return Response(serializer.data)
         except Exception as ex:
             return HttpResponseServerError(ex)
-
-
 
     def list(self, request):
         """Handle GET requests to user resource"""
