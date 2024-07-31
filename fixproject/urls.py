@@ -11,6 +11,7 @@ router.register(r'service_requests', ServiceRequestView, 'service_request')
 router.register(r'profile', ProfileView, 'profile')
 router.register(r'categories', CategoryView, 'category')
 router.register(r'service_request_categories', ServiceRequestCategoryView, 'service_request_category')
+router.register(r'notifications', NotificationView, 'notification')
 
 
 urlpatterns = [

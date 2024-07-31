@@ -5,3 +5,4 @@ from .servicerequest import ServiceRequestView
 from .profile import ProfileView
 from .category import CategoryView
 from .servicerequestcategory import ServiceRequestCategoryView
+from .notification import NotificationView

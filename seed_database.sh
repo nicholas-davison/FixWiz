@@ -12,4 +12,5 @@ python3 manage.py loaddata categories
 python3 manage.py loaddata contractors
 python3 manage.py loaddata servicerequests
 python3 manage.py loaddata servicerequestcategories
+python3 manage.py loaddata notifications
 
