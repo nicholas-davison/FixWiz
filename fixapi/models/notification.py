@@ -14,4 +14,4 @@ class Notification(models.Model):
         return f"Notification for {self.customer} - {self.message[:50]}"
 
     class Meta:
-        ordering = ['-created_at']  # Order notifications by creation time, newest first
+        ordering = ['-created_at']
