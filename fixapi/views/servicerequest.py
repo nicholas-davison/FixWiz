@@ -87,7 +87,7 @@ class ServiceRequestView(ViewSet):
                     notification = Notification.objects.create(
                         customer=service_request.customer,
                         message=notification_message,
-                        link=f"/service_requests/{service_request.id}/"
+                        link=f"/service-requests/{service_request.id}"
                     )
                 except Contractor.DoesNotExist:
                     return Response(None, status=status.HTTP_404_NOT_FOUND)
