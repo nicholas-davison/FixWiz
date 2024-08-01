@@ -3,7 +3,7 @@ from datetime import date
 from rest_framework import serializers, status
 from rest_framework.response import Response
 from rest_framework.viewsets import ViewSet
-from fixapi.models import Contractor, Customer, ServiceRequest, ServiceRequestCategory, Category
+from fixapi.models import Contractor, Customer, ServiceRequest, ServiceRequestCategory, Category, Notification
 from .category import CategorySerializer
 
 
@@ -82,6 +82,13 @@ class ServiceRequestView(ViewSet):
                 try:
                     contractor = Contractor.objects.get(user=request.auth.user)
                     service_request.contractor = contractor
+                    # Create a new notification when a contractor claims a request
+                    notification_message = f"Your ticket number {service_request.id} has been claimed by {contractor.user.first_name} {contractor.user.last_name}."
+                    notification = Notification.objects.create(
+                        customer=service_request.customer,
+                        message=notification_message,
+                        link=f"/service-requests/{service_request.id}"
+                    )
                 except Contractor.DoesNotExist:
                     return Response(None, status=status.HTTP_404_NOT_FOUND)
             if 'remove_contractor' in request.data:
